@@ -4,11 +4,17 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+//Context
+import {ApiConnect} from './Context/ApiConnect'
+import {Accounts} from './Context/Accounts'
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  <ApiConnect>
+    <Accounts>
+      <App />
+    </Accounts>
+  </ApiConnect>  
 );
 
 // If you want to start measuring performance in your app, pass a function
