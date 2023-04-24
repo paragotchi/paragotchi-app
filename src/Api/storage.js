@@ -89,7 +89,7 @@ export const futureCodeHash = async(api, paraId) => {
     return await (await api.query.paras.futureCodeHash(paraId)).toHuman()
 }
 ////// Gives information about the block at which an upgrade will be happening. It gives null if no upgrade is planned.
-const futureCodeUpgrades = async(api, paraId) => {
+export const futureCodeUpgrades = async(api, paraId) => {
     return await (await api.query.paras.futureCodeUpgrades(paraId)).toHuman()
 }
 //// Parachain General Information
@@ -121,4 +121,20 @@ export const parasFullDetails = async (api) => {
     return _paras.map(para => {
         return {...para, stage:_paraLifecycles[para.paraID]}
     })
+}
+
+////// Gives information on all the slots on for all paraIDs
+export const slots = async (api) => {
+    const allSlots = await api.query.slots.leases.entries()
+    const parsedSlots = [];
+    allSlots.forEach(([{ args: [paraID] }, status]) => {
+        const humanParaID = paraID.toHuman();
+        const humanStatus = status.toHuman();
+        const slotsObj = {
+            paraID: humanParaID,
+            remainingSlots: humanStatus.length
+        }
+        parsedSlots.push(slotsObj)
+    });
+    return parsedSlots
 }
