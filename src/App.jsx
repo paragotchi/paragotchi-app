@@ -12,7 +12,7 @@ import NETWORKS from './Utils/networks';
 
 //API Functions
 import { paraDeposit, dataDepositPerByte } from './Api/constants'
-import { nextFreeParaID, paras, currentCodeHash, currentHead, codeByHash, currentCodeHashSub } from './Api/storage'
+import { nextFreeParaID, currentCodeHash, currentHead, codeByHash, currentCodeHashSub, parasFullDetails } from './Api/storage'
 
 const App = () => {
   //CONTEXT
@@ -52,15 +52,14 @@ const App = () => {
       const nextParaId = await nextFreeParaID(api)
       setNextId(nextParaId)
 
-      const allParas = await paras(api)
-      console.log(allParas)
+      const allParas = await parasFullDetails(api)
       setAllParachains(allParas)
 
-      const _paraCodeHash = await currentCodeHash(api, 2000)
+      const _paraCodeHash = await currentCodeHash(api, "2000")
       setParaCodeHash(_paraCodeHash)
 
 
-      const _paraHead = await currentHead(api, 2000)
+      const _paraHead = await currentHead(api, "2000")
       setParaHead(_paraHead)
 
     }
@@ -134,6 +133,7 @@ const App = () => {
             <ul>
             <li>ParaId: {para.paraID}</li>
             <li>ParaOwner: {para.paraInfo.manager}</li>
+            <li>Stage: {para.stage ? para.stage : "unregistered"}</li>
             </ul>
           )
         })
