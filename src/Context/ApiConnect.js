@@ -64,7 +64,7 @@ export function ApiConnect ({ children }) {
     }
 
     return (
-        <ApiContext.Provider value={{api, selectNetwork, isReady}}>
+        <ApiContext.Provider value={{api, selectNetwork, isReady, network}}>
             { children }
         </ApiContext.Provider>
     );
