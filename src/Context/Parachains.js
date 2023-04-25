@@ -33,7 +33,7 @@ export function Parachains ({ children }) {
     const [swaps, setSwaps] = useState(null)
     const [hrmp, setHrmp] = useState(null)
     const [slotsInfo, setSlotsInfo] = useState(null)
-    const [allParaIds, setAllParaIds] = useState(null)
+    const [allParaIds, setAllParaIds] = useState([])
 
     useEffect(() =>{
         const getStorage = async () => {
@@ -43,6 +43,8 @@ export function Parachains ({ children }) {
             const _allParachains = await parasFullDetails(api)
             setAllParachains(_allParachains.data)
 
+            const _allParaIDs = _allParachains.data.map(para => para.paraID);
+            setAllParaIds(_allParaIDs)
       
             const _swaps = await pendingSwaps(api)
             //TODO: This needs some refactoring. Should we add this to a general state, together with all parachains?
@@ -64,7 +66,7 @@ export function Parachains ({ children }) {
     },[api]);
 
     return (
-        <ParachainsContext.Provider value={{nextId, allParachains, swaps, hrmp, slotsInfo}}>
+        <ParachainsContext.Provider value={{nextId, allParachains, swaps, hrmp, slotsInfo, allParaIds}}>
             { children }
         </ParachainsContext.Provider>
     );

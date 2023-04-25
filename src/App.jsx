@@ -6,6 +6,7 @@ import './App.css';
 import ApiContext from './Context/ApiConnect'
 import AccountsContext from './Context/Accounts'
 import ChainInfoContext from './Context/ChainInfo';
+import ParachainsContext from './Context/Parachains';
 
 //Utilities
 import NETWORKS from './Utils/networks';
@@ -17,8 +18,9 @@ import ParachainInfo from './Components/ParachainInfo';
 const App = () => {
   //CONTEXT
   const { selectNetwork, network} = useContext(ApiContext);
-  const {accounts, connectWallet, selectAccount} = useContext(AccountsContext);
+  const {accounts, connectWallet, selectAccount, userParaSelection, userPara} = useContext(AccountsContext);
   const {head} = useContext(ChainInfoContext);
+  const {allParaIds} = useContext(ParachainsContext);
 
   //STATE MANAGEMENT
 
@@ -33,6 +35,10 @@ const App = () => {
 
   const handleAccountSelect = (event) => {
     selectAccount(event.target.value)
+  }
+
+  const handlePAraSelect = (event) => {
+    userParaSelection(event.target.value)
   }
 
   return (
@@ -52,14 +58,30 @@ const App = () => {
       {!accounts.length ? (
         <button onClick={() => handleConnectAccount()}>Connect Accounts</button>
       ) : (
-        <select name="cars" id="cars">
-          {accounts.map(acc => <option value={acc.address} onClick={handleAccountSelect}>{acc.meta.name}</option>)}
+        <select name="accounts" id="accounts">
+          {accounts.map(acc => <option key={acc.address} value={acc.address} onClick={handleAccountSelect}>{acc.meta.name}</option>)}
         </select>
       )}
 
-      <h1>COMPONENTS CHECK</h1>
-      <LeasePeriod />
-      <ParachainInfo />
+      <h1>PARAS</h1>
+      {!allParaIds.length 
+        ? <p>Loading</p> 
+        : (
+        <select name="paras" id="paras">
+          {allParaIds.map(para => <option key={para} value={para} onClick={handlePAraSelect}>{para}</option>)}
+        </select>
+        )
+      }
+      { userPara 
+        ? <div>
+          <h1>INFORMATION DISPLAYED FOR PARA {userPara}</h1>
+          <LeasePeriod />
+          <ParachainInfo />
+        </div>
+        : <div>
+          <h3>Please select a paraID</h3>
+        </div>
+      }
     </div>
   );
 

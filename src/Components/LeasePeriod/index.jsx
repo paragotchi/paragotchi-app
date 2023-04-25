@@ -11,18 +11,17 @@ import {useState, useContext, useEffect} from 'react';
 //Context
 import ChainInfoContext from '../../Context/ChainInfo';
 import ParachainsContext from '../../Context/Parachains';
+import AccountsContext from '../../Context/Accounts';
 
 //Constants
 const YELLOW_SLOT_ALERT = 4;
 const RED_SLOT_ALERT = 2;
 
 const LeasePeriod = () => {
-  //for now it's fixed
-  const PARAID = "2,000"
-
   //CONTEXT
   const {currentLP, LPElapsed, leaseOffset, leaseDuration} = useContext(ChainInfoContext);
   const {slotsInfo} = useContext(ParachainsContext);
+  const {userPara} = useContext(AccountsContext);
 
   //STATE MANAGEMENT
   const [remainingSlots, setRemainingSlots] = useState(null)
@@ -30,11 +29,10 @@ const LeasePeriod = () => {
   const [lastBlock, setLatsBlock] = useState(null)
 
   useEffect(() =>{
-    //TODO: this should re-render with a change on the paraID, but given that it's now fixed, we can't add that just yet.
     let remaining_slots
 
     if (slotsInfo) {
-      remaining_slots = slotsInfo.filter(slot => slot.paraID === PARAID)
+      remaining_slots = slotsInfo.filter(slot => slot.paraID === userPara)
       remaining_slots = remaining_slots.length ? remaining_slots[0].remainingSlots : 0
       setRemainingSlots(remaining_slots)
     }
@@ -51,7 +49,7 @@ const LeasePeriod = () => {
       setLatsBlock(lastBlock_)
     }
 
-  }, [slotsInfo, currentLP, remainingSlots])
+  }, [slotsInfo, currentLP, remainingSlots, userPara])
 
 
   return (

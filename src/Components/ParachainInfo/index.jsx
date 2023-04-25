@@ -9,9 +9,12 @@ import {useState, useContext, useCallback, useEffect} from 'react';
 //Context
 import ParachainsContext from '../../Context/Parachains';
 import ApiContext from '../../Context/ApiConnect';
+import AccountsContext from '../../Context/Accounts';
 
 //Utilities
 import useApiSubscription from '../../Hooks/UnsubHook';
+//TODO: REFACTOR ALL INCOMING NUMBERS AND MAKE THEM...NUMBERS
+import {blockToNumber} from '../../Utils/helpers'
 
 //API Functions
 import { 
@@ -21,13 +24,13 @@ import {
     futureCodeUpgrades,
 } from '../../Api/storage'
 
+
 const ParachainInfo = () => {
-  //for now it's fixed
-  const PARAID = "2,000"
 
   //CONTEXT
   const {allParachains} = useContext(ParachainsContext);
   const {api, isReady} = useContext(ApiContext);
+  const {userPara} = useContext(AccountsContext);
 
   //STATE MANAGEMENT
   const [paraInfo, setParaInfo] = useState(null)
@@ -39,16 +42,16 @@ const ParachainInfo = () => {
   useEffect(() =>{
     //TODO: this should re-render with a change on the paraID, but given that it's now fixed, we can't add that just yet.
     const getStorage = async () => {
-        const _paraCodeHash = await currentCodeHash(api, "2000")
+        const _paraCodeHash = await currentCodeHash(api, blockToNumber(userPara))
         setParaCodeHash(_paraCodeHash.data)
 
-        const _paraHead = await currentHead(api, "2000")
+        const _paraHead = await currentHead(api, blockToNumber(userPara))
         setParaHead(_paraHead.data)
 
-        const _futureParaCodeHash = await futureCodeHash(api, "2000")
+        const _futureParaCodeHash = await futureCodeHash(api, blockToNumber(userPara))
         setFutureParaCodeHash(_futureParaCodeHash.data)
   
-        const _futureParaCodeBlock = await futureCodeUpgrades(api,"2000")
+        const _futureParaCodeBlock = await futureCodeUpgrades(api,blockToNumber(userPara))
         setFutureParaCodeBlock(_futureParaCodeBlock.data)
     }
 
@@ -56,24 +59,23 @@ const ParachainInfo = () => {
         getStorage();
     }
 
-  }, [api])
+  }, [api, userPara])
 
   useEffect(() =>{
-    //TODO: this should re-render with a change on the paraID, but given that it's now fixed, we can't add that just yet.
     if (allParachains) {
-        const _paraInfo = allParachains.filter(para => para.paraID === PARAID)[0]
+        const _paraInfo = allParachains.filter(para => para.paraID === userPara)[0]
         setParaInfo(_paraInfo)
     }
 
-  }, [allParachains])
+  }, [allParachains, userPara])
 
   const getNewParaHeads = useCallback(() => {
     if(api){
-      return api.query.paras.heads("2000", (newHead) => {
+      return api.query.paras.heads(blockToNumber(userPara), (newHead) => {
         setParaHead(newHead.toHuman())
       })
     }
-  }, [api]);
+  }, [api, userPara]);
 
   useApiSubscription(getNewParaHeads, isReady);
 

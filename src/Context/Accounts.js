@@ -9,6 +9,7 @@ export default AccountsContext;
 export function Accounts ({ children }) {
     const [accounts, setAccounts] = useState([]);
     const [userAccount, setUserAccount] = useState(null);
+    const [userPara, setUserPara] = useState(null);
 
     const connectWallet = async () => {
         const extensions = await web3Enable('Para{chain,thread} Manager App');
@@ -30,8 +31,12 @@ export function Accounts ({ children }) {
         }
     }
 
+    const userParaSelection = (paraID) => {
+        setUserPara(paraID)
+    }
+
     return (
-        <AccountsContext.Provider value={{accounts, connectWallet, selectAccount}}>
+        <AccountsContext.Provider value={{accounts, userAccount, connectWallet, selectAccount, userPara, userParaSelection}}>
             { children }
         </AccountsContext.Provider>
     );
