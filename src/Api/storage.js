@@ -114,7 +114,6 @@ export const parasFullDetails = async (api) => {
     // const _parachains = await parachains(api);
     //object that has paraID as key, and lifecycle as value
     const _paraLifecycles = await paraLifecycles(api)
-    console.log(_paraLifecycles)
     // array with objects that have paraID and parachain info
     const _paras = await paras(api)
 

@@ -5,13 +5,13 @@ import './App.css';
 //Context
 import ApiContext from './Context/ApiConnect'
 import AccountsContext from './Context/Accounts'
+import ChainInfoContext from './Context/ChainInfo';
 
 //Utilities
 import useApiSubscription from './Hooks/UnsubHook';
 import NETWORKS from './Utils/networks';
 
 //API Functions
-import { paraDeposit, dataDepositPerByte } from './Api/constants'
 import { 
   nextFreeParaID, 
   currentCodeHash, 
@@ -28,19 +28,15 @@ import {
 
 //Components
 import LeasePeriod from './Components/LeasePeriod';
+import ParachainInfo from './Components/ParachainInfo';
 
 const App = () => {
   //CONTEXT
   const {api, selectNetwork, isReady, network} = useContext(ApiContext);
   const {accounts, connectWallet, selectAccount} = useContext(AccountsContext);
+  const {head} = useContext(ChainInfoContext);
 
   //STATE MANAGEMENT
-  //Subscriptions
-  const [head, setNewHead] = useState(null)
-
-  //Constants
-  const [deposit, setDeposit] = useState(null)
-  const [depositByByte, setdepositByByte] = useState(null)
 
   //Storage Items
   const [nextId, setNextId] = useState(null)
@@ -59,14 +55,6 @@ const App = () => {
   }
 
   useEffect(() =>{
-
-    const getConsts = async () => {
-      const depo = await paraDeposit(api)
-      setDeposit(depo)
-      
-      const depositByte = await dataDepositPerByte(api)
-      setdepositByByte(depositByte)
-    }
 
     const getStorage = async () => {
       const nextParaId = await nextFreeParaID(api)
@@ -103,7 +91,6 @@ const App = () => {
     }
 
     if(api){
-        getConsts();
         getStorage();
     }
   }, [api])
@@ -116,16 +103,7 @@ const App = () => {
   const handleAccountSelect = (event) => {
     selectAccount(event.target.value)
   }
-
-  const getNewHeads = useCallback(() => {
-    if(api){
-      return api.rpc.chain.subscribeNewHeads((lastHeader) => {
-        const newHeight =  lastHeader.toHuman().number
-        setNewHead(newHeight);
-      })
-    }
-  }, [api]);
-
+  
   const getNewParaHeads = useCallback(() => {
     if(api){
       return api.query.paras.heads("2000", (newHead) => {
@@ -134,7 +112,6 @@ const App = () => {
     }
   }, [api]);
 
-  useApiSubscription(getNewHeads, isReady);
   useApiSubscription(getNewParaHeads, isReady);
 
   const filterForPara = (data) =>{
@@ -148,9 +125,6 @@ const App = () => {
     <div className="App">
       <h1>CHAIN: {NETWORKS[network] && NETWORKS[network].name}</h1>
       <h1>HEAD: {head}</h1>
-
-      <h1>COMPONENTS CHECK</h1>
-      <LeasePeriod slots={{slotsInfo}}/>
 
       <h2>RPC</h2>
       
@@ -168,57 +142,9 @@ const App = () => {
         </select>
       )}
 
-      <h1>Chain Constants</h1>
-      {deposit && <p>Deposit: {deposit}</p>}
-      {depositByByte && <p>Deposit by Byte: {depositByByte}</p>}
-
-      <h1>Chain Storage</h1>
-      {nextId && <p>Next ParaID: {nextId}</p>}
-      <dl>
-      {allParachains && allParachains.length && (
-        allParachains.map(para => {
-          return (
-            <>
-              <dt>
-                <dd>ParaId: {para.paraID}</dd>
-                <dd>ParaOwner: {para.paraInfo.manager}</dd>
-                <dd>Stage: {para.stage ? para.stage : "unregistered"}</dd>
-              </dt>
-              <hr></hr>
-            </>
-          )
-        })
-      )}
-      </dl>
-      <h1>Account Details</h1>
-      <small>All information is set for paraID 2000; still not dynamic</small>
-
-      <h2>Current State</h2>
-      {paraCodeHash && <p>Para Code Hash: {paraCodeHash}</p>}
-      {paraHead && <p>Para Code Head: {paraHead}</p>}
-
-      <h3>HRMP Channels</h3>
-      {hrmp && hrmp.length 
-        ? (
-          <ul>
-            {hrmp.map(channel => <li>Sender: {channel.sender} {`=>`} recipient: {channel.recipient}</li>)}
-          </ul>
-        )
-        : <p>No Channels Opened</p>
-      }
-
-      <h2>Future State</h2>
-      
-      {futureParaCodeHash 
-        ? <p>Future Para Code Hash: {futureParaCodeHash}</p>
-        : <p>No Upgrade planned</p>
-      }
-
-      {futureParaCodeBlock 
-        ? <p>Block for future Para Code Hash: {futureParaCodeBlock}</p>
-        : <p>No Upgrade planned</p>
-      }
-
+      <h1>COMPONENTS CHECK</h1>
+      <LeasePeriod />
+      <ParachainInfo />
     </div>
   );
 

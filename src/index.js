@@ -7,13 +7,19 @@ import reportWebVitals from './reportWebVitals';
 //Context
 import {ApiConnect} from './Context/ApiConnect'
 import {Accounts} from './Context/Accounts'
+import {ChainInfo} from './Context/ChainInfo'
+import { Parachains } from './Context/Parachains';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <ApiConnect>
-    <Accounts>
-      <App />
-    </Accounts>
+    <ChainInfo>
+      <Parachains>
+        <Accounts>
+          <App />
+        </Accounts>
+      </Parachains>
+    </ChainInfo>
   </ApiConnect>  
 );
 
