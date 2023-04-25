@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/para-manager-app/static/css/main.073c9b0a.css",
+    "main.js": "/para-manager-app/static/js/main.c411fd84.js",
+    "static/js/787.1adb3841.chunk.js": "/para-manager-app/static/js/787.1adb3841.chunk.js",
+    "index.html": "/para-manager-app/index.html",
+    "main.073c9b0a.css.map": "/para-manager-app/static/css/main.073c9b0a.css.map",
+    "main.c411fd84.js.map": "/para-manager-app/static/js/main.c411fd84.js.map",
+    "787.1adb3841.chunk.js.map": "/para-manager-app/static/js/787.1adb3841.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.073c9b0a.css",
+    "static/js/main.c411fd84.js"
+  ]
+}
