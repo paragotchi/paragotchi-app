@@ -33,26 +33,28 @@ export function Parachains ({ children }) {
     const [swaps, setSwaps] = useState(null)
     const [hrmp, setHrmp] = useState(null)
     const [slotsInfo, setSlotsInfo] = useState(null)
+    const [allParaIds, setAllParaIds] = useState(null)
 
     useEffect(() =>{
         const getStorage = async () => {
-            const nextId_ = await nextFreeParaID(api)
-            setNextId(nextId_)
+            const _nextId = await nextFreeParaID(api)
+            setNextId(_nextId.data)
       
-            const allParachains_ = await parasFullDetails(api)
-            setAllParachains(allParachains_)
+            const _allParachains = await parasFullDetails(api)
+            setAllParachains(_allParachains.data)
+
       
             const _swaps = await pendingSwaps(api)
             //TODO: This needs some refactoring. Should we add this to a general state, together with all parachains?
             // filterForPara(_hrmp,'swaps')
-            setSwaps(_swaps)
+            setSwaps(_swaps.data)
       
             const _hrmp = await hrmpChannels(api)
             //TODO: This needs some refactoring. Should we add this to a general state, together with all parachains?
-            setHrmp(_hrmp)
+            setHrmp(_hrmp.data)
       
             const _slotsInfo = await slots(api)
-            setSlotsInfo(_slotsInfo)
+            setSlotsInfo(_slotsInfo.data)
         }
 
         if(api){

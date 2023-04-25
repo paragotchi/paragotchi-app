@@ -3,6 +3,8 @@
 // Maximum Lease is 8 Lease Periods. We will alert owners if LP is lower than four (1 year Polkadot, 6m on Kusama),
 // and we will critically alert if 2 or lower.
 
+//TODO: if the chain is not a Parachain, this module does not make sense.
+
 //Dependencies
 import {useState, useContext, useEffect} from 'react';
 
@@ -14,7 +16,7 @@ import ParachainsContext from '../../Context/Parachains';
 const YELLOW_SLOT_ALERT = 4;
 const RED_SLOT_ALERT = 2;
 
-const LeasePeriod = ({slots}) => {
+const LeasePeriod = () => {
   //for now it's fixed
   const PARAID = "2,000"
 
@@ -32,7 +34,8 @@ const LeasePeriod = ({slots}) => {
     let remaining_slots
 
     if (slotsInfo) {
-      remaining_slots = slotsInfo.filter(slot => slot.paraID === PARAID)[0].remainingSlots
+      remaining_slots = slotsInfo.filter(slot => slot.paraID === PARAID)
+      remaining_slots = remaining_slots.length ? remaining_slots[0].remainingSlots : 0
       setRemainingSlots(remaining_slots)
     }
     

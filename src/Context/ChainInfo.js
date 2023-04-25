@@ -48,16 +48,16 @@ export function ChainInfo ({ children }) {
 
         const getConsts = async () => {
           const _deposit = await paraDeposit(api)
-          setDeposit(_deposit)
+          setDeposit(_deposit.data)
           
           const _depositByte = await dataDepositPerByte(api)
-          setdepositByByte(_depositByte)
+          setdepositByByte(_depositByte.data)
 
           const _leaseOffset = await leaseOffsetBlocks(api)
-          setLeaseOffset(_leaseOffset)
+          setLeaseOffset(_leaseOffset.data)
 
           const _leaseDuration = await leasePeriodDuration(api)
-          setLeaseDuration(_leaseDuration)
+          setLeaseDuration(_leaseDuration.data)
         }
 
         if(api){

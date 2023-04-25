@@ -40,16 +40,16 @@ const ParachainInfo = () => {
     //TODO: this should re-render with a change on the paraID, but given that it's now fixed, we can't add that just yet.
     const getStorage = async () => {
         const _paraCodeHash = await currentCodeHash(api, "2000")
-        setParaCodeHash(_paraCodeHash)
+        setParaCodeHash(_paraCodeHash.data)
 
         const _paraHead = await currentHead(api, "2000")
-        setParaHead(_paraHead)
+        setParaHead(_paraHead.data)
 
         const _futureParaCodeHash = await futureCodeHash(api, "2000")
-        setFutureParaCodeHash(_futureParaCodeHash)
+        setFutureParaCodeHash(_futureParaCodeHash.data)
   
         const _futureParaCodeBlock = await futureCodeUpgrades(api,"2000")
-        setFutureParaCodeBlock(_futureParaCodeBlock)
+        setFutureParaCodeBlock(_futureParaCodeBlock.data)
     }
 
     if(api){

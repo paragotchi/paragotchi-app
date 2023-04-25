@@ -8,23 +8,7 @@ import AccountsContext from './Context/Accounts'
 import ChainInfoContext from './Context/ChainInfo';
 
 //Utilities
-import useApiSubscription from './Hooks/UnsubHook';
 import NETWORKS from './Utils/networks';
-
-//API Functions
-import { 
-  nextFreeParaID, 
-  currentCodeHash, 
-  currentHead, 
-  codeByHash, 
-  currentCodeHashSub, 
-  parasFullDetails,
-  pendingSwaps,
-  hrmpChannels,
-  futureCodeHash,
-  futureCodeUpgrades,
-  slots
-} from './Api/storage'
 
 //Components
 import LeasePeriod from './Components/LeasePeriod';
@@ -32,68 +16,15 @@ import ParachainInfo from './Components/ParachainInfo';
 
 const App = () => {
   //CONTEXT
-  const {api, selectNetwork, isReady, network} = useContext(ApiContext);
+  const { selectNetwork, network} = useContext(ApiContext);
   const {accounts, connectWallet, selectAccount} = useContext(AccountsContext);
   const {head} = useContext(ChainInfoContext);
 
   //STATE MANAGEMENT
 
-  //Storage Items
-  const [nextId, setNextId] = useState(null)
-  const [allParachains, setAllParachains] = useState([])
-  const [paraCodeHash, setParaCodeHash] = useState(null)
-  const [paraHead, setParaHead] = useState(null)
-  const [paraCode, setParaCode] = useState(null)
-  const [swaps, setSwaps] = useState(null)
-  const [hrmp, setHrmp] = useState(null)
-  const [futureParaCodeHash, setFutureParaCodeHash] = useState(null)
-  const [futureParaCodeBlock, setFutureParaCodeBlock] = useState(null)
-  const [slotsInfo, setSlotsInfo] = useState(null)
-
   const handleClick = (chain, type) => {
     selectNetwork(chain, type)
   }
-
-  useEffect(() =>{
-
-    const getStorage = async () => {
-      const nextParaId = await nextFreeParaID(api)
-      setNextId(nextParaId)
-
-      const allParas = await parasFullDetails(api)
-      setAllParachains(allParas)
-
-      const _paraCodeHash = await currentCodeHash(api, "2000")
-      setParaCodeHash(_paraCodeHash)
-
-      const _paraHead = await currentHead(api, "2000")
-      setParaHead(_paraHead)
-
-      const _swaps = await pendingSwaps(api)
-      //TODO: This needs some refactoring. Should we add this to a general state, together with all parachains?
-      // filterForPara(_hrmp,'swaps')
-      setSwaps(_swaps)
-
-      const _hrmp = await hrmpChannels(api)
-      //TODO: This needs some refactoring. Should we add this to a general state, together with all parachains?
-      const filteredHrpm = filterForPara(_hrmp)
-      setHrmp(filteredHrpm)
-
-      const _futureParaCodeHash = await futureCodeHash(api, "2000")
-      setFutureParaCodeHash(_futureParaCodeHash)
-
-      const _futureParaCodeBlock = await futureCodeUpgrades(api,"2000")
-      setFutureParaCodeBlock(_futureParaCodeBlock)
-
-      const _slotsInfo = await slots(api)
-      setSlotsInfo(_slotsInfo)
-
-    }
-
-    if(api){
-        getStorage();
-    }
-  }, [api])
 
   const handleConnectAccount = () => {
     connectWallet()
@@ -102,22 +33,6 @@ const App = () => {
 
   const handleAccountSelect = (event) => {
     selectAccount(event.target.value)
-  }
-  
-  const getNewParaHeads = useCallback(() => {
-    if(api){
-      return api.query.paras.heads("2000", (newHead) => {
-        setParaHead(newHead.toHuman())
-      })
-    }
-  }, [api]);
-
-  useApiSubscription(getNewParaHeads, isReady);
-
-  const filterForPara = (data) =>{
-    const paraID = '2,000'
-    const filteredData = data.filter(d => d.sender === paraID || d.recipient === paraID);
-    return filteredData;
   }
 
   return (
