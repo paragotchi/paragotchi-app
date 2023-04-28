@@ -60,10 +60,21 @@ export function Parachains ({ children }) {
         }
 
         if(api){
+            cleanupState();
             getStorage();
         }
     
     },[api]);
+
+    //State cleaner to be used when changing networks
+    const cleanupState = () => {
+        setNextId(null);
+        setAllParachains([]);
+        setSwaps(null);
+        setHrmp(null);
+        setSlotsInfo(null);
+        setAllParaIds([]);
+    }
 
     return (
         <ParachainsContext.Provider value={{nextId, allParachains, swaps, hrmp, slotsInfo, allParaIds}}>

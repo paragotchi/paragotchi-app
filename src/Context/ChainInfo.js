@@ -44,6 +44,16 @@ export function ChainInfo ({ children }) {
 
     useApiSubscription(getNewHeads, isReady);
 
+    //State cleaner to be used when changing networks
+    const cleanupState = () => {
+        setDeposit(null);
+        setdepositByByte(null);
+        setLeaseOffset(null);
+        setLeaseDuration(null);
+        setCurrentLP(null);
+        setLPElapsed(null);
+    }
+
     useEffect(() =>{
 
         const getConsts = async () => {
@@ -61,6 +71,7 @@ export function ChainInfo ({ children }) {
         }
 
         if(api){
+            cleanupState();
             getConsts();
         }
     

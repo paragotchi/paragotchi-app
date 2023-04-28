@@ -37,11 +37,16 @@ const LeasePeriod = () => {
       setRemainingSlots(remaining_slots)
     }
     
+    console.log(remainingSlots)
 
     if (remainingSlots <= RED_SLOT_ALERT) {
       setSlotStatus("Red")
     } else if (remainingSlots <= YELLOW_SLOT_ALERT) {
       setSlotStatus("Yellow")
+    } else if (remainingSlots) {
+      setSlotStatus("Green")
+    } else {
+      setSlotStatus("No Slots")
     }
 
     if(remainingSlots){

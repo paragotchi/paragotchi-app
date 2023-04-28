@@ -26,6 +26,7 @@ const App = () => {
 
   const handleClick = (chain, type) => {
     selectNetwork(chain, type)
+    userParaSelection(null)
   }
 
   const handleConnectAccount = () => {

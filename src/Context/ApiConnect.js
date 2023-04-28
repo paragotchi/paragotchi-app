@@ -16,6 +16,7 @@ export function ApiConnect ({ children }) {
     const [network, setNetwork] = useState("polkadot")
     const [connectionType, setConnectionType] = useState('RPC');
     const [provider, setProvider] = useState(null);
+    const [counter, setCounter] = useState(0);
 
     // by default this connects to Polkadot
     useEffect(() =>{
@@ -29,8 +30,17 @@ export function ApiConnect ({ children }) {
 
     //CHOOSE LIGHT CLIENT OR RPC CONNECTION
     const selectNetwork = async (chainID, type) => {
+        //If user selects same network, we'll escape this.
+        if (network === chainID && counter) {return}
+
+        //this is to let the app run the first time.
+        //TODO: Find a better method.
+        setCounter(counter+1)
+
+        //Clean up previous state when changing networks.
         cleanupState()
         
+        //Connect to new network.
         await selectNetworkRPC(chainID)
         
         setConnectionType(type)
@@ -40,6 +50,7 @@ export function ApiConnect ({ children }) {
     //CONNECTS TO RPC
     //TODO: Make it so that user could also determine it's own RPC endpoint
     const selectNetworkRPC = async (chainID) => {
+        
         //If user changes network it will first disconnect the current ws connection.
         if(provider){
             await provider.disconnect();
