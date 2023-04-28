@@ -1,6 +1,6 @@
 //PARACHAIN INFO
-// This will display the information related to the head and wasm of a specific parachain.
-// Users will be able to see current head and current wasm code, as well as future if there are any.
+// This will display the information related to the status, head and wasm of a specific parachain.
+// Users will be able to see current head and current wasm code
 
 
 //Dependencies
@@ -19,10 +19,11 @@ import {blockToNumber} from '../../Utils/helpers'
 //API Functions
 import { 
     currentCodeHash, 
-    currentHead, 
-    futureCodeHash,
-    futureCodeUpgrades,
+    currentHead,
 } from '../../Api/storage'
+
+//Components
+import ExportWasm from '../ExportWasm'
 
 
 const ParachainInfo = () => {
@@ -36,8 +37,6 @@ const ParachainInfo = () => {
   const [paraInfo, setParaInfo] = useState(null)
   const [paraHead, setParaHead] = useState(null)
   const [paraCodeHash, setParaCodeHash] = useState(null)
-  const [futureParaCodeHash, setFutureParaCodeHash] = useState(null)
-  const [futureParaCodeBlock, setFutureParaCodeBlock] = useState(null)
 
   useEffect(() =>{
     //TODO: this should re-render with a change on the paraID, but given that it's now fixed, we can't add that just yet.
@@ -47,12 +46,6 @@ const ParachainInfo = () => {
 
         const _paraHead = await currentHead(api, blockToNumber(userPara))
         setParaHead(_paraHead.data)
-
-        const _futureParaCodeHash = await futureCodeHash(api, blockToNumber(userPara))
-        setFutureParaCodeHash(_futureParaCodeHash.data)
-  
-        const _futureParaCodeBlock = await futureCodeUpgrades(api,blockToNumber(userPara))
-        setFutureParaCodeBlock(_futureParaCodeBlock.data)
     }
 
     if(api){
@@ -98,9 +91,9 @@ const ParachainInfo = () => {
         <h4>Current Info</h4>
         <p>Current Head: {paraHead ? trimHead(paraHead) : "fetching"}</p>
         <p>Current Wasm Hash: {paraCodeHash ? paraCodeHash : "fetching"} </p>
-        <h4>Future Info</h4>
-        <p>Future Wasm Hash: {futureParaCodeHash ? futureParaCodeHash : "No Upgrade Planned"}</p>
-        <p>Execution Block: {futureParaCodeBlock ? futureParaCodeBlock : "No Upgrade Planned"} </p>
+        {paraCodeHash &&
+          <ExportWasm wasmHash={paraCodeHash} />
+        }
       </div>
     </div>
   );

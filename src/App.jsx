@@ -14,6 +14,7 @@ import NETWORKS from './Utils/networks';
 //Components
 import LeasePeriod from './Components/LeasePeriod';
 import ParachainInfo from './Components/ParachainInfo';
+import UpgradeInfo from './Components/UpgradeInfo';
 
 const App = () => {
   //CONTEXT
@@ -76,8 +77,9 @@ const App = () => {
       { userPara 
         ? <div>
           <h1>INFORMATION DISPLAYED FOR PARA {userPara}</h1>
-          <LeasePeriod />
           <ParachainInfo />
+          <LeasePeriod />
+          <UpgradeInfo />
         </div>
         : <div>
           <h3>Please select a paraID</h3>
