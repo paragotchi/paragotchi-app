@@ -34,7 +34,8 @@ const LeasePeriod = () => {
     if (slotsInfo) {
       remaining_slots = slotsInfo.filter(slot => slot.paraID === userPara)
       remaining_slots = remaining_slots.length ? remaining_slots[0].remainingSlots : 0
-      setRemainingSlots(remaining_slots)
+      //need not to count the current one
+      setRemainingSlots(remaining_slots - 1)
     }
     
     console.log(remainingSlots)
