@@ -77,14 +77,19 @@ export function ChainInfo ({ children }) {
             const _durationEndingPeriod = await durationEndingPeriod(api)
             setDurationEP(_durationEndingPeriod.data)
 
-            const _parsedAuctions = await parsedAuctions(api)
-            setAuctions(_parsedAuctions.data)
+        }
 
+        const getStorage = async () => {
+            const _parsedAuctions = await parsedAuctions(api)
+            //TODO: Investigate how to do this properly.
+            // Throw errors? Handle these like this?
+            if(_parsedAuctions.status === 'success') { setAuctions(_parsedAuctions.data) }
         }
 
         if(api){
             cleanupState();
             getConsts();
+            getStorage();
         }
     
     },[api]);

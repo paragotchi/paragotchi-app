@@ -15,6 +15,7 @@ import NETWORKS from './Utils/networks';
 import LeasePeriod from './Components/LeasePeriod';
 import ParachainInfo from './Components/ParachainInfo';
 import UpgradeInfo from './Components/UpgradeInfo';
+import Auctions from './Components/Auctions'
 
 const App = () => {
   //CONTEXT
@@ -64,6 +65,9 @@ const App = () => {
           {accounts.map(acc => <option key={acc.address} value={acc.address} onClick={handleAccountSelect}>{acc.meta.name}</option>)}
         </select>
       )}
+
+      <h1>AUCTIONS</h1>
+      <Auctions />
 
       <h1>PARAS</h1>
       {!allParaIds.length 

@@ -6,9 +6,6 @@ import React, { createContext, useEffect, useState, useContext } from 'react';
 //Context
 import ApiContext from './ApiConnect'
 
-//Utilities
-import {blockToNumber} from '../Utils/helpers'
-
 //API Functions
 import { 
     nextFreeParaID,  

@@ -238,13 +238,13 @@ export const ongoingAuction = async (api) => {
         let data
         const currentAuction = (await api.query.auctions.auctionInfo()).toHuman();
         
-        if (currentAuction.length){
+        if (currentAuction && currentAuction.length){
             const currentAuctionEndStartBlock = currentAuction[1]
             const currentAuctionLP = currentAuction[0]
             data = {
                 "starting_period_block": null,
-                "ending_period_start_block": currentAuctionEndStartBlock,
-                "first_lease_period": currentAuctionLP
+                "ending_period_start_block": blockToNumber(currentAuctionEndStartBlock),
+                "first_lease_period": blockToNumber(currentAuctionLP)
             }
         } else {
             data = null
@@ -325,8 +325,7 @@ export const parsedAuctions = async (api) => {
         })
         return ({status:"success", data})
     } catch (error) {
-        console.log(error)
-        return ({status:"error", error})
+        return ({status:"error", data: error})
     }
 }
 
