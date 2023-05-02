@@ -33,10 +33,12 @@ const Auctions = () => {
     {completeAuctions.length 
       ? <table style={{margin:"auto"}}>
       <thead>
-        <th>LP's Auctioned</th>
-        <th>Auction Starts</th>
-        <th>Ending Period Starts</th>
-        <th>Auction Ends</th>
+        <tr>
+          <th>LP's Auctioned</th>
+          <th>Auction Starts</th>
+          <th>Ending Period Starts</th>
+          <th>Auction Ends</th>
+        </tr>
       </thead>
       <tbody>
         {completeAuctions.map(auction => {
