@@ -11,7 +11,8 @@ import useApiSubscription from '../Hooks/UnsubHook';
 import {blockToNumber} from '../Utils/helpers'
 
 //API Functions
-import { paraDeposit, dataDepositPerByte, leaseOffsetBlocks, leasePeriodDuration } from '../Api/constants'
+import { paraDeposit, dataDepositPerByte, leaseOffsetBlocks, leasePeriodDuration, durationEndingPeriod } from '../Api/constants'
+import { parsedAuctions } from '../Api/storage'
 
 const ChainInfoContext = createContext();
 
@@ -32,6 +33,8 @@ export function ChainInfo ({ children }) {
     const [leaseDuration, setLeaseDuration] = useState(null)
     const [currentLP, setCurrentLP] = useState(null)
     const [LPElapsed, setLPElapsed] = useState(null)
+    const [durationEP, setDurationEP] = useState(null)
+    const [auctions, setAuctions] = useState([])
 
     const getNewHeads = useCallback(() => {
         if(api){
@@ -52,22 +55,31 @@ export function ChainInfo ({ children }) {
         setLeaseDuration(null);
         setCurrentLP(null);
         setLPElapsed(null);
+        setDurationEP(null);
+        setAuctions([]);
     }
 
     useEffect(() =>{
 
         const getConsts = async () => {
-          const _deposit = await paraDeposit(api)
-          setDeposit(_deposit.data)
-          
-          const _depositByte = await dataDepositPerByte(api)
-          setdepositByByte(_depositByte.data)
+            const _deposit = await paraDeposit(api)
+            setDeposit(_deposit.data)
+            
+            const _depositByte = await dataDepositPerByte(api)
+            setdepositByByte(_depositByte.data) 
+            
+            const _leaseOffset = await leaseOffsetBlocks(api)
+            setLeaseOffset(_leaseOffset.data)   
+            
+            const _leaseDuration = await leasePeriodDuration(api)
+            setLeaseDuration(_leaseDuration.data)
+            
+            const _durationEndingPeriod = await durationEndingPeriod(api)
+            setDurationEP(_durationEndingPeriod.data)
 
-          const _leaseOffset = await leaseOffsetBlocks(api)
-          setLeaseOffset(_leaseOffset.data)
+            const _parsedAuctions = await parsedAuctions(api)
+            setAuctions(_parsedAuctions.data)
 
-          const _leaseDuration = await leasePeriodDuration(api)
-          setLeaseDuration(_leaseDuration.data)
         }
 
         if(api){
@@ -86,7 +98,7 @@ export function ChainInfo ({ children }) {
     },[api, head])
 
     return (
-        <ChainInfoContext.Provider value={{head, deposit, depositByByte, leaseOffset, leaseDuration, currentLP, LPElapsed}}>
+        <ChainInfoContext.Provider value={{head, deposit, depositByByte, leaseOffset, leaseDuration, currentLP, LPElapsed, auctions, durationEP}}>
             { children }
         </ChainInfoContext.Provider>
     );

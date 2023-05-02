@@ -1,3 +1,5 @@
+import { blockToNumber } from '../Utils/helpers'
+
 /* *** STORAGE ENTRIES *** */
 
 //// get paraID
@@ -206,9 +208,125 @@ export const slots = async (api) => {
             }
             parsedSlots.push(slotsObj)
         });
-        // return parsedSlots
         return ({status:"success", data: parsedSlots})
     } catch (error) {
         return ({status:"error", data: error})
     }
 }
+
+//// Scheduler Data
+////// Gives information on all scheduled actions
+export const scheduledActions = async (api) => {
+    try {
+        const scheduledActions = await api.query.scheduler.agenda.entries();
+        const data = [];
+        scheduledActions.forEach(([block_execution, call_data]) => {
+            //block_execution has the information of the block at which the scheduler is scheduled to be triggered
+            const actions = call_data.toHuman();
+            // blockExecution needs to be a number to be able to calculate the parsed list of auctions.
+            data.push({...actions[0], "blockExecution": blockToNumber(block_execution.toHuman()[0])})
+        })
+        return ({status:"success", data})
+    } catch (error) {
+        return ({status:"error", data: error})
+    }
+}
+
+////// Gives information on an ongoing auction
+export const ongoingAuction = async (api) => {
+    try {
+        let data
+        const currentAuction = (await api.query.auctions.auctionInfo()).toHuman();
+        
+        if (currentAuction.length){
+            const currentAuctionEndStartBlock = currentAuction[1]
+            const currentAuctionLP = currentAuction[0]
+            data = {
+                "starting_period_block": null,
+                "ending_period_start_block": currentAuctionEndStartBlock,
+                "first_lease_period": currentAuctionLP
+            }
+        } else {
+            data = null
+        }
+        return ({status:"success", data})
+    } catch (error) {
+        return ({status:"error", data: error})
+    }
+}
+
+////// Gives information of auctions in the scheduler
+export const scheduledAuctions = async (api) => {
+    try {
+        const _scheduledActions = await scheduledActions(api);
+        const data = [];
+        //call_data is an array of the calls that will be triggered at the block_execution height
+        //filter only for calls that are to create a newAuction. If this is not the case, it will be an empty array.
+        _scheduledActions.data.forEach((action) => {
+            if(action && action.call.Inline){
+                const tx = api.createType('Call', action.call.Inline);
+                const humanTx = tx.toHuman();
+                if (humanTx.method === "newAuction"){
+                     action.call = {...action.call, "decoded": humanTx}
+                     data.push({...action})
+                }
+            }
+        })
+        return ({status:"success", data})
+    } catch (error) {
+        return ({status:"error", data: error})
+    }
+}
+
+////// Gives parsed information of all auctions: ongoing and scheduled
+////// Objects will be in the form of:
+       /* {
+           "starting_period_block",
+           "ending_period_start_block",
+           "auction_end" -> to be added on the Front End,
+           "first_lease_period",
+       }
+       */
+///// Auction End will always be null, that will come from the constant duration
+///// to be calculated on FE.
+
+export const parsedAuctions = async (api) => {
+    try {
+        const _scheduledAuctions = await scheduledAuctions(api)
+        const _ongoingAuction = await ongoingAuction(api)
+        const data = []
+        if (_ongoingAuction.data) {
+            //this means that there's an ongoing auction
+            data.push(_ongoingAuction.data)
+        }
+        _scheduledAuctions.data.sort((a,b) => (a.blockExecution > b.blockExecution ? 1 : -1)).map(scheduledAuction => {
+            const iters = scheduledAuction.maybePeriodic ? blockToNumber(scheduledAuction.maybePeriodic[1]) : 0;
+            for (let i=0; i<=iters; i++){
+                if (!i) {
+                    const startAuction = scheduledAuction.blockExecution
+                    const ending_period_start_block = startAuction + blockToNumber(scheduledAuction.call.decoded.args.duration)
+                    const newAuction = {
+                        "starting_period_block": startAuction,
+                        ending_period_start_block,
+                        "first_lease_period": scheduledAuction.call.decoded.args.lease_period_index,
+                    }
+                    data.push(newAuction)
+                } else {
+                    const startAuction = data[data.length-1].starting_period_block + blockToNumber(scheduledAuction.maybePeriodic[0])
+                    const ending_period_start_block = startAuction + blockToNumber(scheduledAuction.call.decoded.args.duration)
+                    const newAuction = {
+                        "starting_period_block": startAuction,
+                        ending_period_start_block,
+                        "first_lease_period": scheduledAuction.call.decoded.args.lease_period_index,
+                    }
+                    data.push(newAuction)
+                }
+            }
+        })
+        return ({status:"success", data})
+    } catch (error) {
+        console.log(error)
+        return ({status:"error", error})
+    }
+}
+

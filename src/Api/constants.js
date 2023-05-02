@@ -4,13 +4,11 @@
 ////// Gives information to a user of what are the needed tokens to be deposited to get a paraID. Number in 
 
 export const paraDeposit = async (api) => {
-    let data;
     try{
-        data = await api.consts.registrar.paraDeposit.toNumber()
+        const data = await api.consts.registrar.paraDeposit.toNumber()
         return ({status:"success", data})
     } catch (error) {
-        data = error
-        return ({status:"error", data})
+        return ({status:"error", data: error})
     }
 }
 
@@ -18,12 +16,11 @@ export const paraDeposit = async (api) => {
 ////// Gives information on how much tokens the user needs to lock given the weight of the submitted artifacts
 
 export const dataDepositPerByte = async (api) => {
-    let data;
     try {
-        data = await api.consts.registrar.dataDepositPerByte.toNumber()
+        const data = await api.consts.registrar.dataDepositPerByte.toNumber()
         return ({status:"success", data})
     } catch (error) {
-        return ({status:"error", data})
+        return ({status:"error", data: error})
     }
 }
 
@@ -32,22 +29,30 @@ export const dataDepositPerByte = async (api) => {
 ////// Gives information on the offset to start counting for a LP
 ////// LP = (Block# - leaseOffset) / LeasePeriodDuration
 export const leaseOffsetBlocks = async (api) => {
-    let data;
     try {
-        data = await api.consts.slots.leaseOffset.toNumber()
+        const data = await api.consts.slots.leaseOffset.toNumber()
         return ({status:"success", data})
     } catch (error) {
-        return ({status:"error", data})
+        return ({status:"error", data: error})
     }
 }
 
 ///// Duration of a lease period in blocks.
 export const leasePeriodDuration = async (api) => {
-    let data;
     try {
-        data = await api.consts.slots.leasePeriod.toNumber()
+        const data = await api.consts.slots.leasePeriod.toNumber()
         return ({status:"success", data})
     } catch (error) {
-        return ({status:"error", data})
+        return ({status:"error", data: error})
+    }
+}
+
+///// Duration of the ending period of an auction
+export const durationEndingPeriod = async (api) => {
+    try {
+        const data = await api.consts.auctions.endingPeriod.toNumber();
+        return ({status:"success", data})
+    } catch (error) {
+        return ({status:"error", data: error})
     }
 }

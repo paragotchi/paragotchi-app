@@ -15,7 +15,8 @@ import {
     parasFullDetails,
     pendingSwaps,
     hrmpChannels,
-    slots
+    slots,
+    parsedAuctions
   } from '../Api/storage'
 
 const ParachainsContext = createContext();
