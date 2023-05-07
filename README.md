@@ -5,7 +5,7 @@
 # Para{chain,thread} Manager App
 [![Proudly built by Polkadot Builders DAO](https://user-images.githubusercontent.com/10047147/235292777-f72f2d0d-a425-4c6d-8b3a-325813b72d31.svg)](https://app.polkadotbuilders.xyz/)
 
-This project aims to provide a simple management interface for current or future owners of Para{chain,threads} in the Polkadot. For any feature request, please open an issue.
+This project aims to provide a simple management interface for current or future owners of Para{chain,threads} in the Polkadot Ecosystem. For any feature request, please open an issue.
 
 > **Warning** <br>
 > This project is still in development, so please use with care.
