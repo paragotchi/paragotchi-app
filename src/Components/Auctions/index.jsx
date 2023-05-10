@@ -7,13 +7,14 @@ import {useState, useContext, useEffect} from 'react';
 
 //Context
 import ChainContext from '../../Context/ChainInfo';
-import ApiContext from '../../Context/ApiConnect';
+
+//Helpers
+import { calculateTargetDate } from '../../Utils/helpers'
 
 const Auctions = () => {
 
   //CONTEXT
-  const {auctions, durationEP} = useContext(ChainContext);
-  const {api} = useContext(ApiContext);
+  const {auctions, durationEP, avgBlockTime, head, timestamp} = useContext(ChainContext);
 
   //STATE MANAGEMENT
   const [completeAuctions, setCompleteAuctions] = useState([])
@@ -22,7 +23,10 @@ const Auctions = () => {
     setCompleteAuctions([]);
     if (auctions.length && durationEP) {
       const _completeAuctions = auctions.map(auction => {
-        return {...auction, auction_end: auction.ending_period_start_block + Number(durationEP)}
+        console.log(auction)
+        const start_date = calculateTargetDate(timestamp, head, auction.starting_period_block, avgBlockTime)
+        const end_date = calculateTargetDate(timestamp, head, auction.ending_period_start_block + Number(durationEP), avgBlockTime)
+        return {...auction, start_date, auction_end: auction.ending_period_start_block + Number(durationEP), end_date}
       })
       setCompleteAuctions(_completeAuctions)
     }
@@ -36,8 +40,10 @@ const Auctions = () => {
         <tr>
           <th>LP's Auctioned</th>
           <th>Auction Starts</th>
+          <th>Date</th>
           <th>Ending Period Starts</th>
           <th>Auction Ends</th>
+          <th>Date</th>
         </tr>
       </thead>
       <tbody>
@@ -46,8 +52,10 @@ const Auctions = () => {
             <tr key={auction.ending_period_start_block}>
               <td>{`${auction.first_lease_period} - ${Number(auction.first_lease_period) + 7}`}</td>
               <td>{auction.starting_period_block ? auction.starting_period_block : "LIVE"}</td>
+              <td>{auction.start_date ? auction.start_date.toLocaleDateString() : "Calculating"}</td>
               <td>{auction.ending_period_start_block}</td>
               <td>{auction.auction_end}</td>
+              <td>{auction.end_date ? auction.end_date.toLocaleDateString() : "Calculating"}</td>
             </tr>
           )
         })}

@@ -329,3 +329,25 @@ export const parsedAuctions = async (api) => {
     }
 }
 
+//// General Information
+
+////// Gives the timestamp of a specific block hash
+export const getTimestamp = async(api, blockHash) => {
+    try {
+        const apiAt = await api.at(blockHash)
+        const data = (await (apiAt.query.timestamp.now())).toHuman()
+        return ({status:"success", data})
+    } catch (error) {
+        return ({status:"error", data: error})
+    }
+}
+
+////// Gives the hash of a specific block height
+export const getHash = async (api, blockHeight) => {
+    try {
+        const data = (await api.rpc.chain.getBlockHash(blockHeight)).toHuman();
+        return ({status:"success", data})
+    } catch (error) {
+        return ({status:"error", data: error})
+    }
+}

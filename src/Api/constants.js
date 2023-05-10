@@ -56,3 +56,14 @@ export const durationEndingPeriod = async (api) => {
         return ({status:"error", data: error})
     }
 }
+
+///// Genesis Hash
+export const gensisHash = async (api) => {
+    try {
+        const data = (await api.genesisHash).toHuman()
+        return ({status:"success", data})
+    } catch (error) {
+        return ({status:"error", data: error})
+    }
+}
+

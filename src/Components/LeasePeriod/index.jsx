@@ -37,8 +37,6 @@ const LeasePeriod = () => {
       //need not to count the current one
       setRemainingSlots(remaining_slots - 1)
     }
-    
-    console.log(remainingSlots)
 
     if (remainingSlots <= RED_SLOT_ALERT) {
       setSlotStatus("Red")
