@@ -27,7 +27,9 @@ export function Accounts ({ children }) {
             //TODO: Do something here, maybe a message?
             return;
         } else {
-            setUserAccount(acc)
+            //acc is only the public address; we need to store the entire thing.
+            const _acc = accounts.filter(account => account.address === acc)[0]
+            setUserAccount(_acc)
         }
     }
 

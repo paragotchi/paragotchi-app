@@ -111,9 +111,9 @@ export function ChainInfo ({ children }) {
             if(_parsedAuctions.status === 'success') { setAuctions(_parsedAuctions.data) }
         }
 
-        // const test = async () => {
-        //     reserveID(api)
-        // }
+        const test = async () => {
+            reserveID(api)
+        }
 
         if(api){
             cleanupState();

@@ -16,11 +16,12 @@ import LeasePeriod from './Components/LeasePeriod';
 import ParachainInfo from './Components/ParachainInfo';
 import UpgradeInfo from './Components/UpgradeInfo';
 import Auctions from './Components/Auctions'
+import GetParaID from './Components/GetParaID'
 
 const App = () => {
   //CONTEXT
   const { selectNetwork, network} = useContext(ApiContext);
-  const {accounts, connectWallet, selectAccount, userParaSelection, userPara} = useContext(AccountsContext);
+  const {accounts, connectWallet, selectAccount, userParaSelection, userPara, userAccount} = useContext(AccountsContext);
   const {head} = useContext(ChainInfoContext);
   const {allParaIds} = useContext(ParachainsContext);
 
@@ -88,6 +89,11 @@ const App = () => {
         : <div>
           <h3>Please select a paraID</h3>
         </div>
+      }
+
+      <h1>Actions</h1>
+      {
+        userAccount && <GetParaID />
       }
     </div>
   );
