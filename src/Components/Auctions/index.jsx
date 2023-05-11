@@ -23,14 +23,15 @@ const Auctions = () => {
     setCompleteAuctions([]);
     if (auctions.length && durationEP) {
       const _completeAuctions = auctions.map(auction => {
-        console.log(auction)
         const start_date = calculateTargetDate(timestamp, head, auction.starting_period_block, avgBlockTime)
         const end_date = calculateTargetDate(timestamp, head, auction.ending_period_start_block + Number(durationEP), avgBlockTime)
         return {...auction, start_date, auction_end: auction.ending_period_start_block + Number(durationEP), end_date}
       })
       setCompleteAuctions(_completeAuctions)
     }
-  }, [auctions])
+  }, [auctions, avgBlockTime])
+
+  //TODO: Maybe only render this if all the info is available?
 
   return (
     <>
@@ -52,10 +53,10 @@ const Auctions = () => {
             <tr key={auction.ending_period_start_block}>
               <td>{`${auction.first_lease_period} - ${Number(auction.first_lease_period) + 7}`}</td>
               <td>{auction.starting_period_block ? auction.starting_period_block : "LIVE"}</td>
-              <td>{auction.start_date ? auction.start_date.toLocaleDateString() : "Calculating"}</td>
+              <td>{(auction.start_date &&  avgBlockTime)? auction.start_date.toLocaleDateString() : "Calculating"}</td>
               <td>{auction.ending_period_start_block}</td>
               <td>{auction.auction_end}</td>
-              <td>{auction.end_date ? auction.end_date.toLocaleDateString() : "Calculating"}</td>
+              <td>{(auction.end_date &&  avgBlockTime) ? auction.end_date.toLocaleDateString() : "Calculating"}</td>
             </tr>
           )
         })}

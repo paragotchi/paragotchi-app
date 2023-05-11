@@ -33,7 +33,7 @@ export function ChainInfo ({ children }) {
     // Subscriptions
     const [head, setNewHead] = useState(null)
     const [headHash, setNewHeadHash] = useState(null)
-    const [timestamp, setTimestamp] = useState(null)
+    const [timestamp, setTimestamp] = useState(null) 
     
     // Constants
     const [deposit, setDeposit] = useState(null)
