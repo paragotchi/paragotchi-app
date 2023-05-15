@@ -11,6 +11,7 @@ import AccountsContext from '../../Context/Accounts';
 //API Functions
 import { reserveID } from '../../Api/submission'
 
+console.log("test")
 
 const GetParaID = () => {
     //CONTEXT
